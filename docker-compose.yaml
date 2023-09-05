@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  consumer1:
+    build: ./consumers
+    container_name: consumer1
+    env_file:
+      - .env
+
+  consumer2:
+    build: ./consumers
+    container_name: consumer2
+    env_file:
+      - .env
+
+  consumer3:
+    build: ./consumers
+    container_name: consumer3
+    env_file:
+      - .env
+
+  haproxy:
+    image: haproxy
+    container_name: haproxy
+    volumes:
+      - ./haproxy/conf/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - 8080:80
+    depends_on:
+      - flask1
+      - flask2
+      - flask3
+
+  flask1:
+    build: ./flask
+    container_name: flask1
+    env_file:
+      - .env
+    volumes:
+      - ./flask/src:/opt/src
+
+  flask2:
+    build: ./flask
+    container_name: flask2
+    env_file:
+      - .env
+    volumes:
+      - ./flask/src:/opt/src
+
+  flask3:
+    build: ./flask
+    container_name: flask3
+    env_file:
+      - .env
+    volumes:
+      - ./flask/src:/opt/src
