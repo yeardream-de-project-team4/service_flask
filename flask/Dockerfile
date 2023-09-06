@@ -11,7 +11,7 @@ ADD src /opt/src
 RUN chmod a+x init.sh
 
 # Develop
-# CMD ["./init.sh"]
+CMD ["./init.sh"]
 
 # Production
-CMD ["gunicorn", "--config", "gunicorn-cfg.py", "apps:create_app()"]
+# CMD ["gunicorn", "--config", "gunicorn-cfg.py", "apps:create_app()"]

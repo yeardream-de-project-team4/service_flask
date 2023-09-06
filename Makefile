@@ -3,7 +3,8 @@ all: build up
 
 # Build all service images
 build:
-	docker-compose build
+	docker build -t consumer-flask ./consumers
+	docker build -t my_flask ./flask
 
 # Start all services
 up:

@@ -12,7 +12,7 @@ def route_default():
 
 @blueprint.route("/test")
 def route_test():
-    return "sample_app test"
+    return "sample_app test22"
 
 
 @blueprint.route("/say/<word>")
@@ -31,11 +31,11 @@ def upload():
 @blueprint.route("/do", methods=["POST"])
 def do():
     brokers = Config.KAFKA_BROKERS
-    topic = "test-flask-topic"
+    topic = "test-postgres-topic"
     producer = MessageProducer(brokers, topic)
 
     # do something
 
-    data = {"data": "some data"}
+    data = {"name": "mark", "age": 25}
     result = producer.send_message(data)
     return result, 200

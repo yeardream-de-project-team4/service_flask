@@ -2,22 +2,25 @@ version: '3.8'
 
 services:
   consumer1:
-    build: ./consumers
+    image: consumer-flask
     container_name: consumer1
     env_file:
       - .env
+    restart: always
 
   consumer2:
-    build: ./consumers
+    image: consumer-flask
     container_name: consumer2
     env_file:
       - .env
+    restart: always
 
   consumer3:
-    build: ./consumers
+    image: consumer-flask
     container_name: consumer3
     env_file:
       - .env
+    restart: always
 
   haproxy:
     image: haproxy
@@ -32,7 +35,7 @@ services:
       - flask3
 
   flask1:
-    build: ./flask
+    image: my_flask
     container_name: flask1
     env_file:
       - .env
@@ -40,7 +43,7 @@ services:
       - ./flask/src:/opt/src
 
   flask2:
-    build: ./flask
+    image: my_flask
     container_name: flask2
     env_file:
       - .env
@@ -48,7 +51,7 @@ services:
       - ./flask/src:/opt/src
 
   flask3:
-    build: ./flask
+    image: my_flask
     container_name: flask3
     env_file:
       - .env
