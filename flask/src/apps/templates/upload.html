@@ -7,10 +7,17 @@
 
 <body>
 
-	<h3>Upload File</h3>
+	<h3>Upload File to Postgres</h3>
 	<form action="/file/upload" method="post" enctype="multipart/form-data">
 		<input type="file" name="file">
 		<input type="submit" value="Upload">
+	</form>
+
+
+	<h3>Upload Big File to Hadoop</h3>
+	<form action="/file/big_upload" method="post" enctype="multipart/form-data">
+		<input type="file" name="big_file">
+		<input type="submit" value="Big_Upload">
 	</form>
 
 </body>

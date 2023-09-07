@@ -1,8 +1,9 @@
-import json, os, csv
+import csv
 from apps.file_uploader import blueprint
 from apps.config import Config
 from apps.producer import MessageProducer
-from flask import request, render_template
+from flask import request, render_template, jsonify
+from minio import Minio
 
 
 @blueprint.route("/")
@@ -44,6 +45,36 @@ def upload_file():
             }
             producer.send_message(msg, auto_close=False)
         producer.close()
-        return "Records have been uploaded to the database."
+        return jsonify(
+            {"message": "Records have been uploaded to the database."}
+        )
+    return jsonify({"message": "Failed to upload file"})
 
-    return ":("
+
+@blueprint.route("/big_upload", methods=["POST"])
+def upload_big_file():
+    uploaded_file = request.files["big_file"]
+    if uploaded_file.filename != "":
+        client = Minio(
+            Config.MINIO_HOST,
+            Config.MINIO_USER,
+            Config.MINIO_PASSWORD,
+            secure=False,
+        )
+        client.put_object(
+            "hadoop-bucket",
+            uploaded_file.filename,
+            uploaded_file,
+            length=-1,
+            part_size=10 * 1024 * 1024,
+        )
+
+        brokers = Config.KAFKA_BROKERS
+        topic = "topic-load-hadoop"
+        producer = MessageProducer(brokers, topic)
+        msg = {"bucket": "hadoop-bucket", "filename": uploaded_file.filename}
+        producer.send_message(msg)
+
+        return jsonify({"message": "File uploaded to MinIO successfully!"})
+
+    return jsonify({"message": "Failed to upload file"})
