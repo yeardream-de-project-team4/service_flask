@@ -6,7 +6,7 @@ RUN pip3 install kafka-python
 RUN pip3 install requests
 RUN  pip3 install jsonify
 RUN pip3 install psycopg2
-
+RUN pip3 install pyupbit
 RUN mkdir /opt/src
 WORKDIR /opt/src
 
