@@ -9,7 +9,6 @@ class MessageConsumer:
             bootstrap_servers=brokers,
             value_deserializer=lambda x: x.decode("utf-8"),
             group_id=group_id,
-            auto_offset_reset="earliest",
             enable_auto_commit=True,
         )
         self.consumer.subscribe(topics)
@@ -17,7 +16,9 @@ class MessageConsumer:
     def receive_message(self):
         try:
             for message in self.consumer:
-                print(message)
+                
+                requests.post('http://haproxy:80/sample_app/trade')
+
         except Exception as exc:
             raise exc
 
@@ -25,6 +26,6 @@ class MessageConsumer:
 if __name__ == "__main__":
     brokers = os.getenv("KAFKA_BROKERS").split(",")
     group_id = os.getenv("KAFKA_CONSUMER_GROUP")
-    topics = ["test-flask-topic"]
+    topics = ["eom-flask-topic"]
     cs = MessageConsumer(brokers, topics, group_id)
     cs.receive_message()

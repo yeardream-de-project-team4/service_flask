@@ -11,3 +11,5 @@ def create_app():
         app.register_blueprint(module.blueprint)
 
     return app
+
+    

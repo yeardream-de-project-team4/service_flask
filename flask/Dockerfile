@@ -2,6 +2,7 @@ FROM python:3.9
 
 RUN pip3 install --upgrade pip
 RUN pip3 install flask Flask-Migrate gunicorn kafka-python
+RUN pip3 install requests
 
 RUN mkdir /opt/src
 WORKDIR /opt/src
