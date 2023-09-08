@@ -18,9 +18,11 @@ class MessageConsumer:
     def receive_message(self):
         try:
             for message in self.consumer:
+                print(message.value)
+                continue
                 # Kafka로부터 받은 메시지를 HTTP POST 요청의 body로 사용
                 num = message.value['num'] # {'num': '20'}
-                requests.post(f"http://haproxy:80/taehoon/do/{num}")
+                requests.post(f"http://localhost:8080/taehoon/do/{num}")
                 print(message)
         except Exception as exc:
             raise exc
@@ -28,7 +30,7 @@ class MessageConsumer:
 
 
 if __name__ == "__main__":
-    brokers = os.getenv("KAFKA_BROKERS").split(",")
+    brokers = "52.79.93.120:9092,54.180.66.195:9092,13.209.225.84:9092".split(",")
     group_id = os.getenv("KAFKA_CONSUMER_GROUP")
     topics = ["send-message-topic"]
     cs = MessageConsumer(brokers, topics, group_id)

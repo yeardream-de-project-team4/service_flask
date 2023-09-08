@@ -1,7 +1,11 @@
 FROM python:3.9
 
 RUN pip3 install --upgrade pip
-RUN pip3 install flask Flask-Migrate gunicorn kafka-python
+RUN pip3 install flask Flask-Migrate gunicorn
+RUN pip3 install kafka-python
+RUN pip3 install requests
+RUN  pip3 install jsonify
+RUN pip3 install psycopg2
 
 RUN mkdir /opt/src
 WORKDIR /opt/src

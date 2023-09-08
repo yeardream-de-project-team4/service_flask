@@ -31,7 +31,7 @@ def upload():
 @blueprint.route("/do", methods=["POST"])
 def do():
     brokers = Config.KAFKA_BROKERS
-    topic = "test-postgres-topic"
+    topic = "taehoon-topic"
     producer = MessageProducer(brokers, topic)
 
     # do something
