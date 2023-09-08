@@ -9,7 +9,6 @@ class MessageConsumer:
             bootstrap_servers=brokers,
             value_deserializer=lambda x: x.decode("utf-8"),
             group_id=group_id,
-            auto_offset_reset="earliest",
             enable_auto_commit=True,
         )
         self.consumer.subscribe(topics)

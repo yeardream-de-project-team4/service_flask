@@ -3,7 +3,7 @@ FROM python:3.9
 RUN pip3 install --upgrade pip
 RUN pip3 install flask Flask-Migrate gunicorn
 RUN pip3 install kafka-python
-RUN pip3 install minio
+RUN pip3 install minio beautifulsoup4 requests
 
 RUN mkdir /opt/src
 WORKDIR /opt/src
