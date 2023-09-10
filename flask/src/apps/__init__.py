@@ -7,8 +7,13 @@ def create_app():
 
     # blueprints
 
-
-    for module_name in ["sample_app","taehoon_app","coin"]:
+    for module_name in [
+        "sample_app",
+        "taehoon_app",
+        "coin",
+        "file_uploader",
+        "crawler",
+    ]:
         module = import_module(f"apps.{module_name}.routes")
         app.register_blueprint(module.blueprint)
 

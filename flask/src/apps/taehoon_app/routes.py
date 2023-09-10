@@ -1,7 +1,6 @@
 import json
 from apps.taehoon_app import blueprint
 from apps.config import Config
-from apps.config import Config2
 
 from apps.producer import MessageProducer
 from flask import jsonify
@@ -21,18 +20,18 @@ consumer = KafkaConsumer(
 messages = []
 
 
-
 @blueprint.route("/")
 def index():
-    return render_template("index.html",messages=messages)
+    return render_template("index.html", messages=messages)
 
 
 @blueprint.route("test")
 def test():
-    return "test page" , Config2.API_Key
+    return "test page", Config.API_Key
+
+
 import psycopg2
 from flask import render_template
-
 
 
 @blueprint.route("/do/<num>", methods=["POST"])
@@ -42,37 +41,36 @@ def do(num):
     producer = MessageProducer(brokers, topic)
     try:
         # XML 데이터를 가져오기 위한 API 요청
-        url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
-        
-        
+        url = "http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList"
+
         params = {
-            'serviceKey': Config2.API_Key,
-            'pageNo': '1',
-            'numOfRows': str(num),
-            'dataType': 'XML',
-            'dataCd': 'ASOS',
-            'dateCd': 'HR',
-            'startDt': '20230101',
-            'startHh': '01',
-            'endDt': '20230901',
-            'endHh': '01',
-            'stnIds': '108'
+            "serviceKey": Config.API_Key,
+            "pageNo": "1",
+            "numOfRows": str(num),
+            "dataType": "XML",
+            "dataCd": "ASOS",
+            "dateCd": "HR",
+            "startDt": "20230101",
+            "startHh": "01",
+            "endDt": "20230901",
+            "endHh": "01",
+            "stnIds": "108",
         }
         response = requests.get(url, params=params)
-        
+
         if response.status_code == 200:
             # API 응답이 성공인 경우 XML 데이터 파싱
             xml_data = response.text
             root = ET.fromstring(xml_data)
 
             # 원하는 데이터 추출 및 처리
-            for item in root.iter('item'):
-                tm = item.find('tm').text
-                ta = item.find('ta').text
-                rn = item.find('rn').text
+            for item in root.iter("item"):
+                tm = item.find("tm").text
+                ta = item.find("ta").text
+                rn = item.find("rn").text
                 # 데이터 처리 및 Kafka로 전송 등 필요한 작업 수행
                 # 처리가 완료되면 Kafka로 메시지 전송
-                data = {'temp': ta, 'time': tm, 'rain': rn if rn else 0}
+                data = {"temp": ta, "time": tm, "rain": rn if rn else 0}
                 producer.send_message(data, auto_close=False)
             producer.producer.close()
             return jsonify(data), 200
@@ -83,6 +81,8 @@ def do(num):
 
     except Exception as e:
         return str(e), 500
+
+
 # @blueprint.route('/data')
 # def data():
 #     url = 'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList'
@@ -96,9 +96,9 @@ def do(num):
 #     root = ET.fromstring(response.content)
 
 #     data_list = []
-    
+
 #     for item in root.iter('item'):
-        
+
 #       stnId = item.find('stnId').text if item.find('stnId') is not None else ""
 #       tm = item.find('tm').text if item.find('tm') is not None else ""
 #       ta = item.find('ta').text if item.find('ta') is not None else ""

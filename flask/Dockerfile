@@ -4,9 +4,10 @@ RUN pip3 install --upgrade pip
 RUN pip3 install flask Flask-Migrate gunicorn
 RUN pip3 install kafka-python
 RUN pip3 install requests
-RUN  pip3 install jsonify
 RUN pip3 install psycopg2
 RUN pip3 install pyupbit
+RUN pip3 install minio beautifulsoup4 requests
+
 RUN mkdir /opt/src
 WORKDIR /opt/src
 

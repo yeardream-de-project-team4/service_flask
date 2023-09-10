@@ -23,3 +23,6 @@ class MessageProducer:
             return {"status_code": 200, "error": None}
         except Exception as exc:
             raise exc
+
+    def close(self):
+        self.producer.close()
