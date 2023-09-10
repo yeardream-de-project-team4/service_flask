@@ -13,6 +13,7 @@ def create_app():
         "coin",
         "file_uploader",
         "crawler",
+        "market",
     ]:
         module = import_module(f"apps.{module_name}.routes")
         app.register_blueprint(module.blueprint)

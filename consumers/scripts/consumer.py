@@ -5,6 +5,7 @@ from kafka import KafkaConsumer
 
 from consumer_crawling import callback_crawling
 from consumer_weather import callback_weather
+from consumer_market import callback_market
 
 
 class MessageConsumer:
@@ -34,4 +35,5 @@ if __name__ == "__main__":
     consumer = MessageConsumer()
     consumer.regist_event("airflow-flask-crawling", callback_crawling)
     consumer.regist_event("airflow-flask-weather", callback_weather)
+    consumer.regist_event("airflow-flask-market", callback_market)
     consumer.start()
