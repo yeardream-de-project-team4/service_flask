@@ -7,7 +7,6 @@ services:
     env_file:
       - .env
     restart: always
-    command: python3 /scripts/consumer_crawling.py
 
   consumer2:
     image: consumer-flask

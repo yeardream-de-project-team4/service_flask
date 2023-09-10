@@ -1,33 +1,37 @@
 import os
-import requests
-from kafka import KafkaConsumer
 import json
+
+from kafka import KafkaConsumer
+
+from consumer_crawling import callback_crawling
+from consumer_weather import callback_weather
 
 
 class MessageConsumer:
-    def __init__(self, brokers, topics, group_id):
+    def __init__(self):
         self.consumer = KafkaConsumer(
-            bootstrap_servers=brokers,
+            bootstrap_servers=os.getenv("KAFKA_BROKERS").split(","),
             value_deserializer=lambda x: json.loads(x.decode("utf-8")),
-            group_id=group_id,
+            group_id=os.getenv("KAFKA_CONSUMER_GROUP"),
             enable_auto_commit=True,
         )
-        self.consumer.subscribe(topics)
+        self.events = {}
 
-    def receive_message(self):
-        try:
-            for message in self.consumer:
-                # Kafka로부터 받은 메시지를 HTTP POST 요청의 body로 사용
-                num = message.value["num"]  # {'num': '20'}
-                requests.post(f"http://haproxy:80/taehoon/do/{num}")
-                print(message)
-        except Exception as exc:
-            raise exc
+    def regist_event(self, topic, callback):
+        self.events[topic] = callback
+
+    def start(self):
+        self.consumer.subscribe(list(self.events.keys()))
+        for message in self.consumer:
+            try:
+                self.events[message.topic](message)
+            except Exception as e:
+                print(e)
+                continue
 
 
 if __name__ == "__main__":
-    brokers = os.getenv("KAFKA_BROKERS").split(",")
-    group_id = os.getenv("KAFKA_CONSUMER_GROUP")
-    topics = ["send-message-topic"]
-    cs = MessageConsumer(brokers, topics, group_id)
-    cs.receive_message()
+    consumer = MessageConsumer()
+    consumer.regist_event("airflow-flask-crawling", callback_crawling)
+    consumer.regist_event("airflow-flask-weather", callback_weather)
+    consumer.start()

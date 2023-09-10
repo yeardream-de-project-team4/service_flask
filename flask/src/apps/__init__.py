@@ -9,7 +9,7 @@ def create_app():
 
     for module_name in [
         "sample_app",
-        "taehoon_app",
+        "weather",
         "coin",
         "file_uploader",
         "crawler",

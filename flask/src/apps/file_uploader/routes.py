@@ -30,9 +30,7 @@ def upload_file():
         reader = csv.reader(file.read().decode("utf-8").splitlines())
         next(reader, None)  # 헤더 건너뛰기
 
-        brokers = Config.KAFKA_BROKERS
-        topic = "topic-load-csv"
-        producer = MessageProducer(brokers, topic)
+        producer = MessageProducer()
 
         for source, symbol, link, date, title, content in reader:
             msg = {
@@ -43,7 +41,8 @@ def upload_file():
                 "title": title,
                 "content": content,
             }
-            producer.send_message(msg, auto_close=False)
+            producer.send_message("flask-postgres-csv", msg, auto_close=False)
+            producer.send_message("flask-elk-csv", msg, auto_close=False)
         producer.close()
         return jsonify(
             {"message": "Records have been uploaded to the database."}
@@ -69,12 +68,11 @@ def upload_big_file():
             part_size=10 * 1024 * 1024,
         )
 
-        brokers = Config.KAFKA_BROKERS
-        topic = "topic-load-hadoop"
-        producer = MessageProducer(brokers, topic)
+        producer = MessageProducer()
         msg = {"bucket": "hadoop-bucket", "filename": uploaded_file.filename}
-        producer.send_message(msg)
-
+        producer.send_message("flask-hadoop-file", msg, auto_close=False)
+        producer.send_message("flask-elk-file", msg, auto_close=False)
+        producer.close()
         return jsonify({"message": "File uploaded to MinIO successfully!"})
 
     return jsonify({"message": "Failed to upload file"})

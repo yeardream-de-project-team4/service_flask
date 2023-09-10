@@ -6,7 +6,6 @@ from flask import jsonify
 from bs4 import BeautifulSoup
 
 from apps.crawler import blueprint
-from apps.config import Config
 from apps.producer import MessageProducer
 
 
@@ -22,9 +21,7 @@ def route_test():
 
 @blueprint.route("/ticker/<ticker>", methods=["POST"])
 def crawl(ticker):
-    brokers = Config.KAFKA_BROKERS
-    topic = "topic-load-csv"
-    producer = MessageProducer(brokers, topic)
+    producer = MessageProducer()
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
@@ -89,6 +86,7 @@ def crawl(ticker):
             "title": title,
             "content": content,
         }
-        producer.send_message(msg, auto_close=False)
+        producer.send_message("flask-postgres-csv", msg, auto_close=False)
+        producer.send_message("flask-elk-csv", msg, auto_close=False)
     producer.close()
     return jsonify({"message": "Records have been uploaded to the database."})
