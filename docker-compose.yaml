@@ -1,23 +1,23 @@
 version: '3.8'
 
 services:
-  consumer1:
+  consumer-flask1:
     image: consumer-flask
-    container_name: consumer1
+    container_name: consumer-flask1
     env_file:
       - .env
     restart: always
 
-  consumer2:
+  consumer-flask2:
     image: consumer-flask
-    container_name: consumer2
+    container_name: consumer-flask2
     env_file:
       - .env
     restart: always
 
-  consumer3:
+  consumer-flask3:
     image: consumer-flask
-    container_name: consumer3
+    container_name: consumer-flask3
     env_file:
       - .env
     restart: always
@@ -53,6 +53,14 @@ services:
   flask3:
     image: my_flask
     container_name: flask3
+    env_file:
+      - .env
+    volumes:
+      - ./flask/src:/opt/src
+
+  flask4:
+    image: my_flask
+    container_name: flask4
     env_file:
       - .env
     volumes:
