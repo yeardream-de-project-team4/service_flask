@@ -33,6 +33,7 @@ services:
       - flask1
       - flask2
       - flask3
+      - flask4
 
   flask1:
     image: my_flask
