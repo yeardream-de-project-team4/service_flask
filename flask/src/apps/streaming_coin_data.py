@@ -1,8 +1,32 @@
 import multiprocessing as mp
 import pyupbit
 import datetime
-from apps.producer import MessageProducer
+import os, json
+from kafka import KafkaProducer
 
+class MessageProducer:
+    def __init__(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=os.getenv("KAFKA_BROKERS").split(","),
+            value_serializer=lambda x: json.dumps(x).encode("utf-8"),
+            acks=0,
+            api_version=(3, 4, 1),
+            retries=3,
+        )
+
+    def send_message(self, topic, msg, auto_close=True):
+        try:
+            future = self.producer.send(topic, msg)
+            self.producer.flush()
+            if auto_close:
+                self.producer.close()
+            future.get(timeout=2)
+            return {"status_code": 200, "error": None}
+        except Exception as exc:
+            raise exc
+
+    def close(self):
+        self.producer.close()
 
 if __name__ == "__main__":
     print("===coin producer start!!!===")
