@@ -8,7 +8,6 @@ def create_app():
     # blueprints
 
     for module_name in [
-        "sample_app",
         "weather",
         "coin",
         "file_uploader",
